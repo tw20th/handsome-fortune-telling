@@ -35,15 +35,6 @@ export default function FortunePage() {
     setImage(randomImage);
   };
 
-  const resetFortune = () => {
-    setName("");
-    setBirthday("");
-    setResult("");
-    setLuckyColor("");
-    setLuckyItem("");
-    setImage("");
-  };
-
   const shareOnTwitter = () => {
     const text = `${result}\n${luckyColor}\n${luckyItem}`;
     const url = encodeURIComponent("http://localhost:3000/fortune");
@@ -57,50 +48,48 @@ export default function FortunePage() {
   return (
     <div style={{ padding: "20px", textAlign: "center" }}>
       <h1 style={{ marginBottom: "20px" }}>占いページ</h1>
-      {!result && (
-        <form
-          onSubmit={handleSubmit}
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "10px",
+        }}
+      >
+        <label>
+          名前:
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="あなたの名前を入力"
+            style={{ marginLeft: "10px", padding: "5px" }}
+          />
+        </label>
+        <label>
+          生年月日:
+          <input
+            type="date"
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
+            style={{ marginLeft: "10px", padding: "5px" }}
+          />
+        </label>
+        <button
+          type="submit"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "10px",
+            padding: "10px 20px",
+            backgroundColor: "#0070f3",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
           }}
         >
-          <label>
-            名前:
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="あなたの名前を入力"
-              style={{ marginLeft: "10px", padding: "5px" }}
-            />
-          </label>
-          <label>
-            生年月日:
-            <input
-              type="date"
-              value={birthday}
-              onChange={(e) => setBirthday(e.target.value)}
-              style={{ marginLeft: "10px", padding: "5px" }}
-            />
-          </label>
-          <button
-            type="submit"
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#0070f3",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            占う
-          </button>
-        </form>
-      )}
+          占う
+        </button>
+      </form>
       {result && (
         <div
           style={{
@@ -143,20 +132,6 @@ export default function FortunePage() {
             }}
           >
             結果をTwitterで共有
-          </button>
-          <button
-            onClick={resetFortune}
-            style={{
-              marginTop: "10px",
-              padding: "10px 20px",
-              backgroundColor: "#ff5722",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            もう一度占う
           </button>
         </div>
       )}
