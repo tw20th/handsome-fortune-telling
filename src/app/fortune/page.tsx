@@ -12,6 +12,7 @@ export default function FortunePage() {
     health: string;
   } | null>(null);
   const [image, setImage] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -41,6 +42,9 @@ export default function FortunePage() {
       health: healthResult,
     });
     setImage(randomImage);
+
+    // フェードイン開始
+    setVisible(true);
   };
 
   const resetForm = () => {
@@ -48,6 +52,7 @@ export default function FortunePage() {
     setBirthday("");
     setResults(null);
     setImage(null);
+    setVisible(false);
   };
 
   const shareOnTwitter = () => {
@@ -111,11 +116,14 @@ export default function FortunePage() {
           style={{
             marginTop: "20px",
             padding: "20px",
-            backgroundColor: "#f0f8ff",
-            border: "1px solid #0070f3",
+            backgroundColor: visible ? "#e0f7fa" : "#f0f8ff",
+            border: visible ? "2px solid #00796b" : "1px solid #0070f3",
             borderRadius: "10px",
             maxWidth: "400px",
             margin: "auto",
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 2s ease-in-out, transform 2s ease-in-out, background-color 1.5s ease, border 1.5s ease",
           }}
         >
           <h2>{name}さんの占い結果</h2>
