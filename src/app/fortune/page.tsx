@@ -6,22 +6,28 @@ import Image from "next/image";
 export default function FortunePage() {
   const [name, setName] = useState("");
   const [birthday, setBirthday] = useState("");
-  const [result, setResult] = useState("");
-  const [image, setImage] = useState("");
-  const [luckyColor, setLuckyColor] = useState("");
-  const [luckyItem, setLuckyItem] = useState("");
+  const [results, setResults] = useState<{
+    love: string;
+    work: string;
+    health: string;
+  } | null>(null);
+  const [image, setImage] = useState<string | null>(null);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const fortunes = ["大吉", "中吉", "小吉", "末吉", "凶"];
-    const colors = ["赤", "青", "緑", "黄", "紫"];
-    const items = ["スマホ", "本", "ペン", "時計", "バッグ"];
+    // ランダムな結果を生成する関数
+    const generateRandomResult = () => {
+      const outcomes = ["大吉", "中吉", "小吉", "末吉", "凶"];
+      return outcomes[Math.floor(Math.random() * outcomes.length)];
+    };
 
-    const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    const randomItem = items[Math.floor(Math.random() * items.length)];
+    // カテゴリごとに結果を生成
+    const loveResult = generateRandomResult();
+    const workResult = generateRandomResult();
+    const healthResult = generateRandomResult();
 
+    // ランダムなイケメン画像を選択
     const images = [
       "/images/handsome1.jpg",
       "/images/handsome2.jpg",
@@ -29,14 +35,23 @@ export default function FortunePage() {
     ];
     const randomImage = images[Math.floor(Math.random() * images.length)];
 
-    setResult(`${name}さんの運勢は…${randomFortune}です！`);
-    setLuckyColor(`ラッキーカラー: ${randomColor}`);
-    setLuckyItem(`ラッキーアイテム: ${randomItem}`);
+    setResults({
+      love: loveResult,
+      work: workResult,
+      health: healthResult,
+    });
     setImage(randomImage);
   };
 
+  const resetForm = () => {
+    setName("");
+    setBirthday("");
+    setResults(null);
+    setImage(null);
+  };
+
   const shareOnTwitter = () => {
-    const text = `${result}\n${luckyColor}\n${luckyItem}`;
+    const text = `${name}さんの占い結果\n恋愛運: ${results?.love}\n仕事運: ${results?.work}\n健康運: ${results?.health}`;
     const url = encodeURIComponent("http://localhost:3000/fortune");
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       text
@@ -48,49 +63,50 @@ export default function FortunePage() {
   return (
     <div style={{ padding: "20px", textAlign: "center" }}>
       <h1 style={{ marginBottom: "20px" }}>占いページ</h1>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "10px",
-        }}
-      >
-        <label>
-          名前:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="あなたの名前を入力"
-            style={{ marginLeft: "10px", padding: "5px" }}
-          />
-        </label>
-        <label>
-          生年月日:
-          <input
-            type="date"
-            value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
-            style={{ marginLeft: "10px", padding: "5px" }}
-          />
-        </label>
-        <button
-          type="submit"
+      {!results ? (
+        <form
+          onSubmit={handleSubmit}
           style={{
-            padding: "10px 20px",
-            backgroundColor: "#0070f3",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "10px",
           }}
         >
-          占う
-        </button>
-      </form>
-      {result && (
+          <label>
+            名前:
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="あなたの名前を入力"
+              style={{ marginLeft: "10px", padding: "5px" }}
+            />
+          </label>
+          <label>
+            生年月日:
+            <input
+              type="date"
+              value={birthday}
+              onChange={(e) => setBirthday(e.target.value)}
+              style={{ marginLeft: "10px", padding: "5px" }}
+            />
+          </label>
+          <button
+            type="submit"
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "#0070f3",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            占う
+          </button>
+        </form>
+      ) : (
         <div
           style={{
             marginTop: "20px",
@@ -98,14 +114,14 @@ export default function FortunePage() {
             backgroundColor: "#f0f8ff",
             border: "1px solid #0070f3",
             borderRadius: "10px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             maxWidth: "400px",
-            margin: "20px auto",
+            margin: "auto",
           }}
         >
-          <p style={{ fontSize: "1.2rem", color: "#333" }}>{result}</p>
-          <p style={{ fontSize: "1rem", color: "#0070f3" }}>{luckyColor}</p>
-          <p style={{ fontSize: "1rem", color: "#0070f3" }}>{luckyItem}</p>
+          <h2>{name}さんの占い結果</h2>
+          <p>恋愛運: {results.love}</p>
+          <p>仕事運: {results.work}</p>
+          <p>健康運: {results.health}</p>
           {image && (
             <Image
               src={image}
@@ -132,6 +148,20 @@ export default function FortunePage() {
             }}
           >
             結果をTwitterで共有
+          </button>
+          <button
+            onClick={resetForm}
+            style={{
+              marginTop: "10px",
+              padding: "10px 20px",
+              backgroundColor: "#ff5722",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            もう一度占う
           </button>
         </div>
       )}
