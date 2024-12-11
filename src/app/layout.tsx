@@ -1,22 +1,27 @@
-import './globals.css';
-import Link from 'next/link';
+import "./globals.css";
 
 export const metadata = {
-  title: 'イケメン占いサイト',
-  description: '運命を導くイケメン占い',
+  title: "イケメン占いサイト",
+  description: "女性向けの優雅な占い体験をお届けします。",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="ja">
       <body>
-        <header>
-          <nav>
-            <Link href="/">ホーム</Link> | <Link href="/fortune">占い</Link> | <Link href="/contact">お問い合わせ</Link>
-          </nav>
+        <header style={{ padding: "20px", background: "#ffe4e1", textAlign: "center" }}>
+          <h1 style={{ margin: 0, fontFamily: "'Georgia', serif", color: "#d63384" }}>
+            イケメン占いサイト
+          </h1>
         </header>
-        <main>{children}</main>
-        <footer>© 2024 イケメン占いサイト. All rights reserved.</footer>
+        <main style={{ padding: "20px" }}>{children}</main>
+        <footer style={{ padding: "20px", background: "#ffe4e1", textAlign: "center" }}>
+          <p>© 2024 イケメン占いサイト. All rights reserved.</p>
+        </footer>
       </body>
     </html>
   );
